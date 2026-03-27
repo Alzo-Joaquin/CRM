@@ -2,6 +2,7 @@ const form = document.getElementById("form-producto");
 const tabla = document.getElementById("tabla-productos");
 const mensaje = document.getElementById("mensaje");
 const btn = document.getElementById("recargar");
+const selectCategoria = document.getElementById("categoria_id");
 
 async function cargarProductos() {
   const res = await fetch("/productos");
@@ -20,12 +21,31 @@ async function cargarProductos() {
       <td>${p.costo}</td>
       <td>${p.stock_actual}</td>
       <td>${p.stock_minimo}</td>
-      <td>${p.categoria_id}</td>
+      <td>${p.categoria ?? ""}</td>
       <td>${p.activo ? "Sí" : "No"}</td>
     `;
 
     tabla.appendChild(row);
   });
+}
+
+async function cargarCategorias() {
+  try {
+    const res = await fetch("/categorias");
+    const categorias = await res.json();
+
+    selectCategoria.innerHTML = `<option value="">Seleccionar categoría</option>`;
+
+    categorias.forEach(categoria => {
+      const option = document.createElement("option");
+      option.value = categoria.id;
+      option.textContent = `${categoria.id} - ${categoria.nombre}`;
+      selectCategoria.appendChild(option);
+    });
+  } catch (error) {
+    mensaje.innerText = "Error al cargar categorías.";
+    mensaje.style.color = "red";
+  }
 }
 
 form.addEventListener("submit", async (e) => {
@@ -38,7 +58,7 @@ form.addEventListener("submit", async (e) => {
     costo: Number(document.getElementById("costo").value),
     stock_actual: Number(document.getElementById("stock_actual").value),
     stock_minimo: Number(document.getElementById("stock_minimo").value),
-    categoria_id: Number(document.getElementById("categoria_id").value)
+    categoria_id: Number(selectCategoria.value),
   };
 
   const res = await fetch("/productos", {
@@ -59,9 +79,15 @@ form.addEventListener("submit", async (e) => {
   mensaje.style.color = "green";
 
   form.reset();
-  cargarProductos();
+  await cargarCategorias
+  await cargarProductos();
 });
 
 btn.addEventListener("click", cargarProductos);
 
-cargarProductos();
+async function inicializarPantallaProductos() {
+  await cargarCategorias();
+  await cargarProductos();
+}
+
+inicializarPantallaProductos();

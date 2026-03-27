@@ -6,6 +6,13 @@ const formVenta = document.getElementById("form-venta");
 const mensajeVenta = document.getElementById("mensaje-venta");
 const tablaVentas = document.getElementById("tabla-ventas");
 const btnRecargarVentas = document.getElementById("btn-recargar-ventas");
+const btnAnterior = document.getElementById("btn-anterior");
+const btnSiguiente = document.getElementById("btn-siguiente");
+const infoPagina = document.getElementById("info-pagina");
+
+let paginaActual = 1;
+const limitePorPagina = 5;
+let totalPaginas = 1;
 
 async function cargarClientes() {
   const response = await fetch("/clientes?activo=true");
@@ -49,9 +56,39 @@ async function cargarProductos() {
   });
 }
 
+// async function cargarVentas() {
+//   const response = await fetch("/ventas");
+//   const ventas = await response.json();
+
+//   tablaVentas.innerHTML = "";
+
+//   for (const venta of ventas) {
+//     const fila = document.createElement("tr");
+
+//     const resumenProductos = venta.items
+//     .map(item => `${item.producto} x ${item.cantidad} unidades`)
+//     .join("; ");
+
+//     fila.innerHTML = `
+//       <td>${venta.id}</td>
+//       <td>${venta.cliente}</td>
+//       <td>${venta.usuario}</td>
+//       <td>${resumenProductos}</td>
+//       <td>${venta.total}</td>
+//       <td>${venta.estado}</td>
+//       <td>${venta.fecha ?? ""}</td>
+//     `;
+
+//     tablaVentas.appendChild(fila);
+//   }
+// }
+
 async function cargarVentas() {
-  const response = await fetch("/ventas");
-  const ventas = await response.json();
+  const response = await fetch(`/ventas?page=${paginaActual}&limit=${limitePorPagina}`);
+  const data = await response.json();
+
+  const ventas = data.results;
+  totalPaginas = data.pages;
 
   tablaVentas.innerHTML = "";
 
@@ -59,8 +96,8 @@ async function cargarVentas() {
     const fila = document.createElement("tr");
 
     const resumenProductos = venta.items
-    .map(item => `${item.producto} x ${item.cantidad} unidades`)
-    .join("; ");
+      .map(item => `${item.producto} x${item.cantidad}`)
+      .join(", ");
 
     fila.innerHTML = `
       <td>${venta.id}</td>
@@ -74,6 +111,10 @@ async function cargarVentas() {
 
     tablaVentas.appendChild(fila);
   }
+
+  infoPagina.textContent = `Página ${data.page} de ${data.pages}`;
+  btnAnterior.disabled = paginaActual <= 1;
+  btnSiguiente.disabled = paginaActual >= totalPaginas;
 }
 
 formVenta.addEventListener("submit", async (event) => {
@@ -126,8 +167,23 @@ formVenta.addEventListener("submit", async (event) => {
 });
 
 btnRecargarVentas.addEventListener("click", async () => {
+  paginaActual = 1;
   await cargarVentas();
   await cargarProductos();
+});
+
+btnAnterior.addEventListener("click", async () => {
+  if (paginaActual > 1) {
+    paginaActual--;
+    await cargarVentas();
+  }
+});
+
+btnSiguiente.addEventListener("click", async () => {
+  if (paginaActual < totalPaginas) {
+    paginaActual++;
+    await cargarVentas();
+  }
 });
 
 async function inicializarPantallaVentas() {

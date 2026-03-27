@@ -606,3 +606,22 @@ table th {
 .sidebar-index .sidebar-footer {
   margin-top: auto;
 }
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.paginacion span {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

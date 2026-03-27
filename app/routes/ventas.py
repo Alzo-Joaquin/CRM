@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from math import ceil
 from app.extensions import db
 from app.models.cliente import Cliente
 from app.models.usuario import Usuario
@@ -137,9 +138,58 @@ def crear_venta():
     }), 201
 
 
+# @ventas_bp.route("", methods=["GET"])
+# def listar_ventas():
+#     ventas = Venta.query.order_by(Venta.id.asc()).all()
+
+#     resultado = []
+#     for venta in ventas:
+#         resultado.append({
+#             "id": venta.id,
+#             "fecha": venta.fecha.isoformat() if venta.fecha else None,
+#             "total": float(venta.total),
+#             "estado": venta.estado,
+#             "cliente_id": venta.cliente_id,
+#             "cliente": f"{venta.cliente.nombre} {venta.cliente.apellido}",
+#             "usuario_id": venta.usuario_id,
+#             "usuario": venta.usuario.nombre,
+
+#             "items": [
+#                 {
+#                     "producto_id": detalle.producto_id,
+#                     "producto": detalle.producto.nombre,
+#                     "cantidad": detalle.cantidad,
+#                     "precio_unitario": float(detalle.precio_unitario),
+#                     "subtotal": float(detalle.subtotal)
+#                 }
+#                 for detalle in venta.detalles
+#             ]
+#         })
+
+#     return jsonify(resultado), 200
+
 @ventas_bp.route("", methods=["GET"])
 def listar_ventas():
-    ventas = Venta.query.order_by(Venta.id.asc()).all()
+    try:
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 5))
+    except ValueError:
+        return jsonify({"error": "Los parámetros 'page' y 'limit' deben ser enteros"}), 400
+
+    if page < 1 or limit < 1:
+        return jsonify({"error": "Los parámetros 'page' y 'limit' deben ser mayores a cero"}), 400
+
+    total = Venta.query.count()
+    pages = ceil(total / limit) if total > 0 else 1
+    offset = (page - 1) * limit
+
+    ventas = (
+        Venta.query
+        .order_by(Venta.id.asc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
 
     resultado = []
     for venta in ventas:
@@ -152,7 +202,6 @@ def listar_ventas():
             "cliente": f"{venta.cliente.nombre} {venta.cliente.apellido}",
             "usuario_id": venta.usuario_id,
             "usuario": venta.usuario.nombre,
-
             "items": [
                 {
                     "producto_id": detalle.producto_id,
@@ -165,7 +214,13 @@ def listar_ventas():
             ]
         })
 
-    return jsonify(resultado), 200
+    return jsonify({
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "pages": pages,
+        "results": resultado
+    }), 200
 
 @ventas_bp.route("/cliente/<int:cliente_id>", methods=["GET"])
 def listar_ventas_por_cliente(cliente_id):

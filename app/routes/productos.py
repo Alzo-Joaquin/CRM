@@ -80,7 +80,21 @@ def listar_productos():
             return jsonify({"error": "Parámetro 'activo' inválido"}), 400
 
     productos = query.order_by(Producto.id.asc()).all()
-    return jsonify([producto.to_dict() for producto in productos]), 200
+    return jsonify([
+        {
+            "id": producto.id,
+            "nombre": producto.nombre,
+            "descripcion": producto.descripcion,
+            "precio": float(producto.precio),
+            "costo": float(producto.costo),
+            "stock_actual": producto.stock_actual,
+            "stock_minimo": producto.stock_minimo,
+            "activo": producto.activo,
+            "categoria_id": producto.categoria_id,
+            "categoria": producto.categoria.nombre if producto.categoria else None
+        }
+        for producto in productos
+    ]), 200
 
 
 @productos_bp.route("/stock-bajo", methods=["GET"])
