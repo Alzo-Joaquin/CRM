@@ -15,8 +15,12 @@ async function cargarProductos() {
     row.innerHTML = `
       <td>${p.id}</td>
       <td>${p.nombre}</td>
+      <td>${p.descripcion ?? ""}</td>
       <td>${p.precio}</td>
+      <td>${p.costo}</td>
       <td>${p.stock_actual}</td>
+      <td>${p.stock_minimo}</td>
+      <td>${p.categoria_id}</td>
       <td>${p.activo ? "Sí" : "No"}</td>
     `;
 
