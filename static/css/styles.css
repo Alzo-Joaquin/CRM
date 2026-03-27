@@ -1,0 +1,92 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
+
+.contenedor {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #222;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  margin-top: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.campo {
+  margin-bottom: 15px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.campo input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.boton {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 16px;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.boton:hover {
+  background-color: #1d4ed8;
+}
+
+.boton.secundario {
+  background-color: #6b7280;
+}
+
+.boton.secundario:hover {
+  background-color: #4b5563;
+}
+
+.menu {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#mensaje {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background-color: white;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f0f0f0;
+}

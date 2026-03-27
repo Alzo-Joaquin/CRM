@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ventas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="contenedor">
+    <h1>Gestión de Ventas</h1>
+
+    <div class="menu">
+      <a class="boton secundario" href="/">Volver al inicio</a>
+    </div>
+
+    <section class="card">
+      <h2>Registrar venta</h2>
+
+      <form id="form-venta">
+        <div class="campo">
+          <label for="cliente">Cliente</label>
+          <select id="cliente" required>
+            <option value="">Seleccionar cliente</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="usuario">Usuario vendedor</label>
+          <select id="usuario" required>
+            <option value="">Seleccionar usuario</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="producto">Producto</label>
+          <select id="producto" required>
+            <option value="">Seleccionar producto</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="cantidad">Cantidad</label>
+          <input type="number" id="cantidad" min="1" required>
+        </div>
+
+        <button class="boton" type="submit">Registrar venta</button>
+      </form>
+
+      <p id="mensaje-venta"></p>
+    </section>
+
+    <section class="card">
+      <h2>Ventas registradas</h2>
+      <button class="boton" id="btn-recargar-ventas">Recargar ventas</button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Usuario</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-ventas"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/ventas.js') }}"></script>
+</body>
+</html>

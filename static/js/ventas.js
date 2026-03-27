@@ -1,0 +1,140 @@
+const selectCliente = document.getElementById("cliente");
+const selectUsuario = document.getElementById("usuario");
+const selectProducto = document.getElementById("producto");
+const inputCantidad = document.getElementById("cantidad");
+const formVenta = document.getElementById("form-venta");
+const mensajeVenta = document.getElementById("mensaje-venta");
+const tablaVentas = document.getElementById("tabla-ventas");
+const btnRecargarVentas = document.getElementById("btn-recargar-ventas");
+
+async function cargarClientes() {
+  const response = await fetch("/clientes?activo=true");
+  const clientes = await response.json();
+
+  selectCliente.innerHTML = `<option value="">Seleccionar cliente</option>`;
+
+  clientes.forEach(cliente => {
+    const option = document.createElement("option");
+    option.value = cliente.id;
+    option.textContent = `${cliente.id} - ${cliente.nombre} ${cliente.apellido}`;
+    selectCliente.appendChild(option);
+  });
+}
+
+async function cargarUsuarios() {
+  const response = await fetch("/usuarios?activo=true");
+  const usuarios = await response.json();
+
+  selectUsuario.innerHTML = `<option value="">Seleccionar usuario</option>`;
+
+  usuarios.forEach(usuario => {
+    const option = document.createElement("option");
+    option.value = usuario.id;
+    option.textContent = `${usuario.id} - ${usuario.nombre} (${usuario.rol})`;
+    selectUsuario.appendChild(option);
+  });
+}
+
+async function cargarProductos() {
+  const response = await fetch("/productos?activo=true");
+  const productos = await response.json();
+
+  selectProducto.innerHTML = `<option value="">Seleccionar producto</option>`;
+
+  productos.forEach(producto => {
+    const option = document.createElement("option");
+    option.value = producto.id;
+    option.textContent = `${producto.id} - ${producto.nombre} | Stock: ${producto.stock_actual} | Precio: ${producto.precio}`;
+    selectProducto.appendChild(option);
+  });
+}
+
+async function cargarVentas() {
+  const response = await fetch("/ventas");
+  const ventas = await response.json();
+
+  tablaVentas.innerHTML = "";
+
+  for (const venta of ventas) {
+    const fila = document.createElement("tr");
+
+    const resumenProductos = venta.items
+    .map(item => `${item.producto} x ${item.cantidad} unidades`)
+    .join("; ");
+
+    fila.innerHTML = `
+      <td>${venta.id}</td>
+      <td>${venta.cliente}</td>
+      <td>${venta.usuario}</td>
+      <td>${resumenProductos}</td>
+      <td>${venta.total}</td>
+      <td>${venta.estado}</td>
+      <td>${venta.fecha ?? ""}</td>
+    `;
+
+    tablaVentas.appendChild(fila);
+  }
+}
+
+formVenta.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const clienteId = Number(selectCliente.value);
+  const usuarioId = Number(selectUsuario.value);
+  const productoId = Number(selectProducto.value);
+  const cantidad = Number(inputCantidad.value);
+
+  const venta = {
+    cliente_id: clienteId,
+    usuario_id: usuarioId,
+    items: [
+      {
+        producto_id: productoId,
+        cantidad: cantidad
+      }
+    ]
+  };
+
+  try {
+    const response = await fetch("/ventas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(venta)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      mensajeVenta.textContent = data.error || "Error al registrar la venta.";
+      mensajeVenta.style.color = "red";
+      return;
+    }
+
+    mensajeVenta.textContent = `Venta registrada correctamente. ID venta: ${data.id}`;
+    mensajeVenta.style.color = "green";
+
+    formVenta.reset();
+
+    await cargarVentas();
+    await cargarProductos();
+  } catch (error) {
+    mensajeVenta.textContent = "Error de conexión con el servidor.";
+    mensajeVenta.style.color = "red";
+  }
+});
+
+btnRecargarVentas.addEventListener("click", async () => {
+  await cargarVentas();
+  await cargarProductos();
+});
+
+async function inicializarPantallaVentas() {
+  await cargarClientes();
+  await cargarUsuarios();
+  await cargarProductos();
+  await cargarVentas();
+}
+
+inicializarPantallaVentas();

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="contenedor">
+    <h1>Gestión de Productos</h1>
+
+    <a class="boton secundario" href="/">Volver</a>
+
+    <section class="card">
+      <h2>Crear producto</h2>
+
+      <form id="form-producto">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="descripcion" placeholder="Descripción">
+        <input type="number" id="precio" placeholder="Precio" required>
+        <input type="number" id="costo" placeholder="Costo" required>
+        <input type="number" id="stock_actual" placeholder="Stock actual" required>
+        <input type="number" id="stock_minimo" placeholder="Stock mínimo" required>
+        <input type="number" id="categoria_id" placeholder="Categoría ID" required>
+
+        <button class="boton" type="submit">Crear</button>
+      </form>
+
+      <p id="mensaje"></p>
+    </section>
+
+    <section class="card">
+      <h2>Listado de productos</h2>
+
+      <button class="boton" id="recargar">Recargar</button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Activo</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-productos"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/productos.js') }}"></script>
+</body>
+</html>
