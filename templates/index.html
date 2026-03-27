@@ -1,21 +1,82 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRM Backend</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-  <div class="contenedor">
-    <h1>CRM - Sistema de Gestión Comercial</h1>
-    <p>Bienvenido al frontend de prueba del sistema.</p>
+{% extends "base_index.html" %}
 
-    <div class="menu">
-      <a class="boton" href="/clientes-ui">Ir a Clientes</a>
-      <a class="boton" href="/productos-ui">Ir a Productos</a>
-      <a class="boton" href="/ventas-ui">Ir a Ventas</a>
+{% block title %}Inicio - CRM{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Resumen general del sistema comercial{% endblock %}
+
+{% block content %}
+  <div class="hero-panel hero-compact">
+    <div>
+      <p class="hero-kicker">CRM · Sistema de Gestión Comercial</p>
+      <h2 class="hero-title">Panel principal de administración</h2>
+      <p class="hero-text">
+        Desde este dashboard podés gestionar clientes, productos y ventas
+        en una única interfaz conectada a una base de datos online.
+      </p>
+    </div>
+
+  <div class="dashboard-grid dashboard-grid-large">
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Accesos rápidos</h2>
+        <span class="info-badge">Navegación</span>
+      </div>
+
+      <div class="quick-actions">
+        <a class="quick-action-card" href="/clientes-ui">
+          <div class="quick-action-icon">👥</div>
+          <div>
+            <h3>Clientes</h3>
+            <p>Administrá altas, ediciones y estados de clientes.</p>
+          </div>
+        </a>
+
+        <a class="quick-action-card" href="/productos-ui">
+          <div class="quick-action-icon">📦</div>
+          <div>
+            <h3>Productos</h3>
+            <p>Gestioná catálogo, stock y precios comerciales.</p>
+          </div>
+        </a>
+
+        <a class="quick-action-card" href="/ventas-ui">
+          <div class="quick-action-icon">💰</div>
+          <div>
+            <h3>Ventas</h3>
+            <p>Registrá operaciones y consultá el historial.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Estado actual del proyecto</h2>
+        <span class="info-badge">Demo online</span>
+      </div>
+
+      <ul class="status-list">
+        <li><span>Backend Flask</span><strong>Operativo</strong></li>
+        <li><span>Base PostgreSQL</span><strong>Conectada</strong></li>
+        <li><span>Frontend básico</span><strong>Activo</strong></li>
+        <li><span>Deploy en Render</span><strong>Publicado</strong></li>
+      </ul>
     </div>
   </div>
-</body>
-</html>
+
+  <div class="card">
+    <div class="section-title-row">
+      <h2>Objetivo del sistema</h2>
+      <span class="info-badge">Contexto</span>
+    </div>
+
+    <p class="objetivo-texto">
+      Este proyecto simula un sistema CRM para una empresa de venta de tecnología.
+      Permite gestionar entidades comerciales, controlar inventario y registrar ventas
+      con reglas de negocio reales, incluyendo validación de stock, baja lógica y
+      persistencia en base de datos remota.
+    </p>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,23 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ventas</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-  <div class="contenedor">
-    <h1>Gestión de Ventas</h1>
+{% extends "base.html" %}
 
-    <div class="menu">
-      <a class="boton secundario" href="/">Volver al inicio</a>
-    </div>
+{% block title %}Ventas - CRM{% endblock %}
+{% block page_title %}Gestión de Ventas{% endblock %}
+{% block page_subtitle %}Registrá operaciones comerciales y consultá historial{% endblock %}
 
-    <section class="card">
-      <h2>Registrar venta</h2>
+{% block content %}
+  <div class="card">
+    <h2>Registrar venta</h2>
 
-      <form id="form-venta">
+    <form id="form-venta">
+      <div class="form-grid">
         <div class="campo">
           <label for="cliente">Cliente</label>
           <select id="cliente" required>
@@ -32,7 +24,7 @@
           </select>
         </div>
 
-        <div class="campo">
+        <div class="campo campo-completo">
           <label for="producto">Producto</label>
           <select id="producto" required>
             <option value="">Seleccionar producto</option>
@@ -43,17 +35,24 @@
           <label for="cantidad">Cantidad</label>
           <input type="number" id="cantidad" min="1" required>
         </div>
+      </div>
 
-        <button class="boton" type="submit">Registrar venta</button>
-      </form>
+      <button class="boton" type="submit">Registrar venta</button>
+    </form>
 
-      <p id="mensaje-venta"></p>
-    </section>
+    <p id="mensaje-venta"></p>
+  </div>
 
-    <section class="card">
-      <h2>Ventas registradas</h2>
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Ventas registradas</h2>
+        <span class="info-badge">Historial comercial</span>
+      </div>
       <button class="boton" id="btn-recargar-ventas">Recargar ventas</button>
+    </div>
 
+    <div class="tabla-wrapper">
       <table>
         <thead>
           <tr>
@@ -68,9 +67,8 @@
         </thead>
         <tbody id="tabla-ventas"></tbody>
       </table>
-    </section>
+    </div>
   </div>
 
   <script src="{{ url_for('static', filename='js/ventas.js') }}"></script>
-</body>
-</html>
+{% endblock %}

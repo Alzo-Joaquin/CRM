@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CRM{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-box">CRM</div>
+        <div>
+          <h2>Panel Comercial</h2>
+          <p>Gestión de ventas</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 <span>Inicio</span></a>
+        <a href="/clientes-ui" class="nav-link">👥 <span>Clientes</span></a>
+        <a href="/productos-ui" class="nav-link">📦 <span>Productos</span></a>
+        <a href="/ventas-ui" class="nav-link">💰 <span>Ventas</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>CRM Demo</p>
+        <small>Deploy + DB online</small>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>{% block page_title %}Panel{% endblock %}</h1>
+          <p class="topbar-subtitle">{% block page_subtitle %}Administración general del sistema{% endblock %}</p>
+        </div>
+      </header>
+
+      <section class="content-area">
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

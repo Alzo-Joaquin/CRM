@@ -1,54 +1,85 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Productos</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-  <div class="contenedor">
-    <h1>Gestión de Productos</h1>
+{% extends "base.html" %}
 
-    <a class="boton secundario" href="/">Volver</a>
+{% block title %}Productos - CRM{% endblock %}
+{% block page_title %}Gestión de Productos{% endblock %}
+{% block page_subtitle %}Administrá catálogo, costos, precios y stock{% endblock %}
 
-    <section class="card">
-      <h2>Crear producto</h2>
+{% block content %}
+  <div class="card">
+    <h2>Crear producto</h2>
 
-      <form id="form-producto">
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <input type="text" id="descripcion" placeholder="Descripción">
-        <input type="number" id="precio" placeholder="Precio" required>
-        <input type="number" id="costo" placeholder="Costo" required>
-        <input type="number" id="stock_actual" placeholder="Stock actual" required>
-        <input type="number" id="stock_minimo" placeholder="Stock mínimo" required>
-        <input type="number" id="categoria_id" placeholder="Categoría ID" required>
+    <form id="form-producto">
+      <div class="form-grid">
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" required>
+        </div>
 
-        <button class="boton" type="submit">Crear</button>
-      </form>
+        <div class="campo">
+          <label for="descripcion">Descripción</label>
+          <input type="text" id="descripcion">
+        </div>
 
-      <p id="mensaje"></p>
-    </section>
+        <div class="campo">
+          <label for="precio">Precio</label>
+          <input type="number" id="precio" required>
+        </div>
 
-    <section class="card">
-      <h2>Listado de productos</h2>
+        <div class="campo">
+          <label for="costo">Costo</label>
+          <input type="number" id="costo" required>
+        </div>
 
+        <div class="campo">
+          <label for="stock_actual">Stock actual</label>
+          <input type="number" id="stock_actual" required>
+        </div>
+
+        <div class="campo">
+          <label for="stock_minimo">Stock mínimo</label>
+          <input type="number" id="stock_minimo" required>
+        </div>
+
+        <div class="campo campo-completo">
+          <label for="categoria_id">Categoría ID</label>
+          <input type="number" id="categoria_id" required>
+        </div>
+      </div>
+
+      <button class="boton" type="submit">Crear producto</button>
+    </form>
+
+    <p id="mensaje"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Listado de productos</h2>
+        <span class="info-badge">Stock e inventario</span>
+      </div>
       <button class="boton" id="recargar">Recargar</button>
+    </div>
 
+    <div class="tabla-wrapper">
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Nombre</th>
+            <th>Descripción</th>
             <th>Precio</th>
-            <th>Stock</th>
+            <th>Costo</th>
+            <th>Stock actual</th>
+            <th>Stock mínimo</th>
+            <th>Categoría</th>
             <th>Activo</th>
           </tr>
         </thead>
         <tbody id="tabla-productos"></tbody>
       </table>
-    </section>
+    </div>
   </div>
 
   <script src="{{ url_for('static', filename='js/productos.js') }}"></script>
-</body>
-</html>
+{% endblock %}
