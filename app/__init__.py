@@ -6,6 +6,7 @@ from app.routes.categorias import categorias_bp
 from app.routes.productos import productos_bp
 from app.routes.usuarios import usuarios_bp
 from app.routes.ventas import ventas_bp
+from app.routes.dashboard import dashboard_bp
 
 from app import models
 
@@ -26,6 +27,7 @@ def create_app():
     app.register_blueprint(productos_bp, url_prefix="/productos")
     app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
     app.register_blueprint(ventas_bp, url_prefix="/ventas")
+    app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
 
     @app.route("/")
     def home():
