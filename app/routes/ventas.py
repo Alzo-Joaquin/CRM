@@ -6,11 +6,15 @@ from app.models.usuario import Usuario
 from app.models.producto import Producto
 from app.models.venta import Venta
 from app.models.detalle_venta import DetalleVenta
+from app.utils.auth import roles_required
+from flask_login import login_required
 
 ventas_bp = Blueprint("ventas", __name__)
 
 
 @ventas_bp.route("", methods=["POST"])
+@login_required
+@roles_required("admin", "vendedor")
 def crear_venta():
     data = request.get_json()
 
@@ -136,37 +140,6 @@ def crear_venta():
             for item in productos_procesados
         ]
     }), 201
-
-
-# @ventas_bp.route("", methods=["GET"])
-# def listar_ventas():
-#     ventas = Venta.query.order_by(Venta.id.asc()).all()
-
-#     resultado = []
-#     for venta in ventas:
-#         resultado.append({
-#             "id": venta.id,
-#             "fecha": venta.fecha.isoformat() if venta.fecha else None,
-#             "total": float(venta.total),
-#             "estado": venta.estado,
-#             "cliente_id": venta.cliente_id,
-#             "cliente": f"{venta.cliente.nombre} {venta.cliente.apellido}",
-#             "usuario_id": venta.usuario_id,
-#             "usuario": venta.usuario.nombre,
-
-#             "items": [
-#                 {
-#                     "producto_id": detalle.producto_id,
-#                     "producto": detalle.producto.nombre,
-#                     "cantidad": detalle.cantidad,
-#                     "precio_unitario": float(detalle.precio_unitario),
-#                     "subtotal": float(detalle.subtotal)
-#                 }
-#                 for detalle in venta.detalles
-#             ]
-#         })
-
-#     return jsonify(resultado), 200
 
 @ventas_bp.route("", methods=["GET"])
 def listar_ventas():

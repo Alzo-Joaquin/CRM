@@ -1,11 +1,14 @@
 from flask import Blueprint, request, jsonify
 from app.extensions import db
 from app.models.usuario import Usuario
+from app.utils.auth import roles_required
+from flask_login import login_required
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
-
 @usuarios_bp.route("", methods=["POST"])
+@login_required
+@roles_required("admin")
 def crear_usuario():
     data = request.get_json()
 
@@ -42,6 +45,8 @@ def crear_usuario():
 
 
 @usuarios_bp.route("", methods=["GET"])
+@login_required
+@roles_required("admin")
 def listar_usuarios():
     activo_param = request.args.get("activo")
 
@@ -60,6 +65,8 @@ def listar_usuarios():
 
 
 @usuarios_bp.route("/<int:usuario_id>", methods=["GET"])
+@login_required
+@roles_required("admin")
 def obtener_usuario(usuario_id):
     usuario = Usuario.query.get(usuario_id)
 
@@ -69,6 +76,8 @@ def obtener_usuario(usuario_id):
     return jsonify(usuario.to_dict()), 200
 
 @usuarios_bp.route("/<int:usuario_id>", methods=["DELETE"])
+@login_required
+@roles_required("admin")
 def eliminar_usuario(usuario_id):
     usuario = Usuario.query.get(usuario_id)
 

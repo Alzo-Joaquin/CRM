@@ -20,14 +20,19 @@
       <nav class="sidebar-nav">
         <a href="/" class="nav-link">🏠 <span>Inicio</span></a>
         <a href="/clientes-ui" class="nav-link">👥 <span>Clientes</span></a>
-        <a href="/productos-ui" class="nav-link">📦 <span>Productos</span></a>
+
+        {% if current_user.rol == "admin" %}
+          <a href="/productos-ui" class="nav-link">📦 <span>Productos</span></a>
+          <a href="/usuarios-ui" class="nav-link">🔐 <span>Usuarios</span></a>
+        {% endif %}
+
         <a href="/ventas-ui" class="nav-link">💰 <span>Ventas</span></a>
       </nav>
 
       <div class="sidebar-footer">
         {% if current_user.is_authenticated %}
           <p>{{ current_user.nombre }}</p>
-          <small>{{ current_user.rol }}</small>
+          <small>Rol: {{ current_user.rol }}</small>
           <div class="sidebar-footer-actions">
             <a href="{{ url_for('auth.logout') }}" class="logout-link">Cerrar sesión</a>
           </div>
@@ -36,6 +41,7 @@
           <small>Deploy + DB online</small>
         {% endif %}
       </div>
+
     </aside>
 
     <main class="main-content">

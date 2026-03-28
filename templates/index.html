@@ -31,6 +31,7 @@
           </div>
         </a>
 
+        {% if current_user.rol == "admin" %}
         <a class="quick-action-card" href="/productos-ui">
           <div class="quick-action-icon">📦</div>
           <div>
@@ -38,7 +39,8 @@
             <p>Gestioná catálogo, stock y precios comerciales.</p>
           </div>
         </a>
-
+        {% endif %} 
+        
         <a class="quick-action-card" href="/ventas-ui">
           <div class="quick-action-icon">💰</div>
           <div>
@@ -46,6 +48,17 @@
             <p>Registrá operaciones y consultá el historial.</p>
           </div>
         </a>
+
+      {% if current_user.rol == "admin" %}
+        <a class="quick-action-card" href="/usuarios-ui">
+          <div class="quick-action-icon">🔐</div>
+          <div>
+            <h3>Usuarios</h3>
+            <p>Administrá cuentas, roles y accesos del sistema.</p>
+          </div>
+        </a>
+      {% endif %}       
+
       </div>
     </div>
 

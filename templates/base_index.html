@@ -48,7 +48,7 @@
       <div class="sidebar-footer">
         {% if current_user.is_authenticated %}
           <p>{{ current_user.nombre }}</p>
-          <small>{{ current_user.rol }}</small>
+          <small>Rol: {{ current_user.rol }}</small>
           <div class="sidebar-footer-actions">
             <a href="{{ url_for('auth.logout') }}" class="logout-link">Cerrar sesión</a>
           </div>

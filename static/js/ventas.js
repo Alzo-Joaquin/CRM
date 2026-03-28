@@ -29,6 +29,10 @@ async function cargarClientes() {
 }
 
 async function cargarUsuarios() {
+  if (!selectUsuario || selectUsuario.tagName !== "SELECT") {
+    return;
+  }
+
   const response = await fetch("/usuarios?activo=true");
   const usuarios = await response.json();
 

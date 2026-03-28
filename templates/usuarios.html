@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios - CRM{% endblock %}
+{% block page_title %}Administración de Usuarios{% endblock %}
+{% block page_subtitle %}Alta y consulta de cuentas del sistema{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2>Crear usuario</h2>
+
+    <form id="form-usuario">
+      <div class="form-grid">
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" required>
+        </div>
+
+        <div class="campo">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+
+        <div class="campo">
+          <label for="rol">Rol</label>
+          <select id="rol" required>
+            <option value="">Seleccionar rol</option>
+            <option value="admin">admin</option>
+            <option value="vendedor">vendedor</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" required>
+        </div>
+      </div>
+
+      <button class="boton" type="submit">Crear usuario</button>
+    </form>
+
+    <p id="mensaje-usuario"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Listado de usuarios</h2>
+        <span class="info-badge">Solo administradores</span>
+      </div>
+      <button class="boton" id="btn-recargar-usuarios">Recargar</button>
+    </div>
+
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Activo</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-usuarios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
+{% endblock %}

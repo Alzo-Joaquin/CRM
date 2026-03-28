@@ -19,9 +19,15 @@
 
         <div class="campo">
           <label for="usuario">Usuario vendedor</label>
-          <select id="usuario" required>
-            <option value="">Seleccionar usuario</option>
-          </select>
+
+          {% if usuario_actual.rol == "admin" %}
+            <select id="usuario" required>
+              <option value="">Seleccionar usuario</option>
+            </select>
+          {% else %}
+            <input type="text" id="usuario_nombre" value="{{ usuario_actual.nombre }}" disabled>
+            <input type="hidden" id="usuario" value="{{ usuario_actual.id }}">
+          {% endif %}
         </div>
 
         <div class="campo campo-completo">

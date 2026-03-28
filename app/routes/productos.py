@@ -2,11 +2,15 @@ from flask import Blueprint, request, jsonify
 from app.extensions import db
 from app.models.producto import Producto
 from app.models.categoria import Categoria
+from flask_login import login_required
+from app.utils.auth import roles_required
 
 productos_bp = Blueprint("productos", __name__)
 
 
 @productos_bp.route("", methods=["POST"])
+@login_required
+@roles_required("admin")
 def crear_producto():
     data = request.get_json()
 
@@ -103,6 +107,8 @@ def listar_productos_stock_bajo():
     return jsonify([producto.to_dict() for producto in productos]), 200
 
 @productos_bp.route("/<int:producto_id>/stock", methods=["PATCH"])
+@login_required
+@roles_required("admin")
 def actualizar_stock_producto(producto_id):
     producto = Producto.query.get(producto_id)
 
@@ -161,6 +167,8 @@ def actualizar_stock_producto(producto_id):
     }), 200
 
 @productos_bp.route("/<int:producto_id>", methods=["DELETE"])
+@login_required
+@roles_required("admin")
 def eliminar_producto(producto_id):
     producto = Producto.query.get(producto_id)
 
@@ -178,6 +186,8 @@ def eliminar_producto(producto_id):
     }), 200
 
 @productos_bp.route("/<int:producto_id>", methods=["PATCH"])
+@login_required
+@roles_required("admin")
 def actualizar_producto(producto_id):
     producto = Producto.query.get(producto_id)
 

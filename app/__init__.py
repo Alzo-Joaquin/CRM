@@ -1,6 +1,7 @@
 from pathlib import Path
 from flask import Flask, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
+from flask import abort
 from app.config import Config
 from app.extensions import db, migrate
 from app.routes.clientes import clientes_bp
@@ -62,11 +63,20 @@ def create_app():
     @app.route("/productos-ui")
     @login_required
     def productos_ui():
+        if current_user.rol != "admin":
+            abort(403)
         return render_template("productos.html")
 
     @app.route("/ventas-ui")
     @login_required
     def ventas_ui():
-        return render_template("ventas.html")
-    
+        return render_template("ventas.html", usuario_actual=current_user)
+
+    @app.route("/usuarios-ui")
+    @login_required
+    def usuarios_ui():
+        if current_user.rol != "admin":
+            abort(403)
+        return render_template("usuarios.html")
+
     return app
