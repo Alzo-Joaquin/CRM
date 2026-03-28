@@ -9,6 +9,7 @@ const btnRecargarVentas = document.getElementById("btn-recargar-ventas");
 const btnAnterior = document.getElementById("btn-anterior");
 const btnSiguiente = document.getElementById("btn-siguiente");
 const infoPagina = document.getElementById("info-pagina");
+const inputEmailCliente = document.getElementById("email_cliente");
 
 let paginaActual = 1;
 const limitePorPagina = 5;
@@ -60,33 +61,6 @@ async function cargarProductos() {
   });
 }
 
-// async function cargarVentas() {
-//   const response = await fetch("/ventas");
-//   const ventas = await response.json();
-
-//   tablaVentas.innerHTML = "";
-
-//   for (const venta of ventas) {
-//     const fila = document.createElement("tr");
-
-//     const resumenProductos = venta.items
-//     .map(item => `${item.producto} x ${item.cantidad} unidades`)
-//     .join("; ");
-
-//     fila.innerHTML = `
-//       <td>${venta.id}</td>
-//       <td>${venta.cliente}</td>
-//       <td>${venta.usuario}</td>
-//       <td>${resumenProductos}</td>
-//       <td>${venta.total}</td>
-//       <td>${venta.estado}</td>
-//       <td>${venta.fecha ?? ""}</td>
-//     `;
-
-//     tablaVentas.appendChild(fila);
-//   }
-// }
-
 async function cargarVentas() {
   const response = await fetch(`/ventas?page=${paginaActual}&limit=${limitePorPagina}`);
   const data = await response.json();
@@ -128,10 +102,12 @@ formVenta.addEventListener("submit", async (event) => {
   const usuarioId = Number(selectUsuario.value);
   const productoId = Number(selectProducto.value);
   const cantidad = Number(inputCantidad.value);
+  const emailCliente = inputEmailCliente.value.trim();
 
   const venta = {
     cliente_id: clienteId,
     usuario_id: usuarioId,
+    email: emailCliente,
     items: [
       {
         producto_id: productoId,

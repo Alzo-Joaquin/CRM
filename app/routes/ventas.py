@@ -7,6 +7,7 @@ from app.models.producto import Producto
 from app.models.venta import Venta
 from app.models.detalle_venta import DetalleVenta
 from app.utils.auth import roles_required
+from app.services.email_service import enviar_mail_venta
 from flask_login import login_required
 
 ventas_bp = Blueprint("ventas", __name__)
@@ -17,10 +18,11 @@ ventas_bp = Blueprint("ventas", __name__)
 @roles_required("admin", "vendedor")
 def crear_venta():
     data = request.get_json()
-
+    
     if not data:
         return jsonify({"error": "Debe enviar un body en formato JSON"}), 400
 
+    email = data.get("email")
     cliente_id = data.get("cliente_id")
     usuario_id = data.get("usuario_id")
     items = data.get("items")
@@ -113,10 +115,24 @@ def crear_venta():
             )
 
             db.session.add(detalle)
-
             producto.stock_actual -= cantidad
 
         db.session.commit()
+
+        if email:
+            try:
+                items_mail = []
+                for item in productos_procesados:
+                    items_mail.append({
+                        "producto": item["producto"].nombre,
+                        "cantidad": item["cantidad"],
+                        "precio_unitario": item["precio_unitario"],
+                        "subtotal": item["subtotal"]
+                    })
+
+                    enviar_mail_venta(email, venta, cliente, items_mail)
+            except Exception as e:
+                print(f"Error enviando mail de venta: {e}")
 
     except Exception:
         db.session.rollback()
