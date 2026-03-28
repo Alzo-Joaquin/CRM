@@ -12,7 +12,7 @@ def crear_usuario():
     if not data:
         return jsonify({"error": "Debe enviar un body en formato JSON"}), 400
 
-    campos_obligatorios = ["nombre", "email", "rol"]
+    campos_obligatorios = ["nombre", "email", "rol", "password"]
     for campo in campos_obligatorios:
         if campo not in data or not str(data[campo]).strip():
             return jsonify({"error": f"El campo '{campo}' es obligatorio"}), 400
@@ -23,12 +23,17 @@ def crear_usuario():
     if usuario_existente:
         return jsonify({"error": "Ya existe un usuario con ese email"}), 409
 
+    password = str(data["password"]).strip()
+    if not password:
+        return jsonify({"error": "El campo 'password' no puede estar vacío"}), 400
+
     usuario = Usuario(
         nombre=data["nombre"].strip(),
         email=email,
         rol=data["rol"].strip(),
         activo=True
     )
+    usuario.set_password(password)
 
     db.session.add(usuario)
     db.session.commit()

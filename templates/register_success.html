@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro exitoso - CRM</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="logo-box">CRM</div>
+        <div>
+          <h1>Usuario creado</h1>
+          <p>Tu cuenta fue creada correctamente</p>
+        </div>
+      </div>
+
+      <div class="flash-message flash-success">
+        Ya podés iniciar sesión con tu email y contraseña.
+      </div>
+
+      <a class="boton login-button" href="{{ url_for('auth.login') }}">Ir al login</a>
+    </div>
+  </div>
+</body>
+</html>

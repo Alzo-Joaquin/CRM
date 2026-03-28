@@ -25,8 +25,16 @@
       </nav>
 
       <div class="sidebar-footer">
-        <p>CRM Demo</p>
-        <small>Deploy + DB online</small>
+        {% if current_user.is_authenticated %}
+          <p>{{ current_user.nombre }}</p>
+          <small>{{ current_user.rol }}</small>
+          <div class="sidebar-footer-actions">
+            <a href="{{ url_for('auth.logout') }}" class="logout-link">Cerrar sesión</a>
+          </div>
+        {% else %}
+          <p>CRM Demo</p>
+          <small>Deploy + DB online</small>
+        {% endif %}
       </div>
     </aside>
 
