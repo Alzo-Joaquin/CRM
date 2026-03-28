@@ -1,30 +1,31 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# import smtplib
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
+# import os
+
+import requests
 import os
 
-
 def enviar_mail(destinatario, asunto, cuerpo_html):
-    servidor = os.getenv("MAIL_SERVER")
-    puerto = int(os.getenv("MAIL_PORT", 587))
-    usuario = os.getenv("MAIL_USERNAME")
-    password = os.getenv("MAIL_PASSWORD")
-    remitente = os.getenv("MAIL_DEFAULT_SENDER")
+    api_key = os.getenv("RESEND_API_KEY")
 
-    mensaje = MIMEMultipart()
-    mensaje["From"] = remitente
-    mensaje["To"] = destinatario
-    mensaje["Subject"] = asunto
+    response = requests.post(
+        "https://api.resend.com/emails",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "from": "CRM <onboarding@resend.dev>",
+            "to": [destinatario],
+            "subject": asunto,
+            "html": cuerpo_html,
+        },
+    )
 
-    mensaje.attach(MIMEText(cuerpo_html, "html"))
+    if response.status_code != 200:
+        print("Error enviando mail:", response.text)
 
-    try:
-        with smtplib.SMTP(servidor, puerto) as server:
-            server.starttls()
-            server.login(usuario, password)
-            server.send_message(mensaje)
-    except Exception as e:
-        print(f"Error enviando mail: {e}")
 
 def enviar_mail_venta(destinatario, venta, cliente, items):
     asunto = f"CRM Comercial | Comprobante de compra #{venta.id}"
@@ -137,37 +138,3 @@ def enviar_mail_venta(destinatario, venta, cliente, items):
     """
 
     enviar_mail(destinatario, asunto, cuerpo)
-
-# def enviar_mail_venta(destinatario, venta, cliente, items):
-#     asunto = f"Comprobante de compra #{venta.id}"
-
-#     detalle_items = ""
-#     for item in items:
-#         detalle_items += f"""
-#         <tr>
-#             <td>{item['producto']}</td>
-#             <td>{item['cantidad']}</td>
-#             <td>${item['precio_unitario']}</td>
-#             <td>${item['subtotal']}</td>
-#         </tr>
-#         """
-
-#     cuerpo = f"""
-#     <h2>Gracias por tu compra</h2>
-#     <p><strong>Cliente:</strong> {cliente.nombre}</p>
-#     <p><strong>Fecha:</strong> {venta.fecha}</p>
-
-#     <table border="1" cellpadding="6" cellspacing="0">
-#         <tr>
-#             <th>Producto</th>
-#             <th>Cantidad</th>
-#             <th>Precio</th>
-#             <th>Subtotal</th>
-#         </tr>
-#         {detalle_items}
-#     </table>
-
-#     <h3>Total: ${venta.total}</h3>
-#     """
-
-#     enviar_mail(destinatario, asunto, cuerpo)
