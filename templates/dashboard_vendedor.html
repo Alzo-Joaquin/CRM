@@ -15,6 +15,16 @@
     </div>
   </div>
 
+  <div id="alerta-vendedor-solicitudes" class="alerta-vendedor alerta-vendedor-oculta">
+    <div class="alerta-vendedor-contenido">
+      <div>
+        <p class="alerta-vendedor-kicker">Estado de solicitudes</p>
+        <h3 id="alerta-vendedor-titulo">Tenés actualizaciones de stock</h3>
+        <div id="alerta-vendedor-lista"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="dashboard-grid">
     <div class="card vendedor-card vendedor-card-destacado">
       <h2>Nueva venta</h2>
@@ -90,4 +100,7 @@
       </ul>
     </div>
   </div>
+
+  <script src="{{ url_for('static', filename='js/dashboard_vendedor.js') }}"></script>
+
 {% endblock %}

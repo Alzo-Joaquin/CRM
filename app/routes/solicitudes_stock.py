@@ -138,3 +138,110 @@ def rechazar_solicitud_stock(solicitud_id):
     except Exception:
         db.session.rollback()
         return jsonify({"error": "Ocurrió un error al rechazar la solicitud"}), 500
+
+# @solicitudes_stock_bp.route("/mis-notificaciones", methods=["GET"])
+# @login_required
+# @roles_required("vendedor")
+# def mis_notificaciones_solicitudes_stock():
+#     solicitudes = (
+#         SolicitudStock.query
+#         .filter(SolicitudStock.usuario_id == current_user.id)
+#         .filter(
+#             db.or_(
+#                 db.and_(
+#                     SolicitudStock.estado == "aprobada",
+#                     SolicitudStock.recibido_por_vendedor == False
+#                 ),
+#                 SolicitudStock.estado == "rechazada"
+#             )
+#         )
+#         .order_by(SolicitudStock.id.desc())
+#         .limit(5)
+#         .all()
+#     )
+
+#     return jsonify([solicitud.to_dict() for solicitud in solicitudes]), 200
+
+@solicitudes_stock_bp.route("/mis-notificaciones", methods=["GET"])
+@login_required
+@roles_required("vendedor")
+def mis_notificaciones_solicitudes_stock():
+    solicitudes = (
+        SolicitudStock.query
+        .filter(SolicitudStock.usuario_id == current_user.id)
+        .filter(
+            (SolicitudStock.estado == "aprobada") |
+            (SolicitudStock.estado == "rechazada")
+        )
+        .order_by(SolicitudStock.id.desc())
+        .limit(5)
+        .all()
+    )
+
+    # FILTRAMOS SOLO APROBADAS NO RECIBIDAS + TODAS LAS RECHAZADAS
+    resultado = []
+
+    for s in solicitudes:
+        if s.recibido_por_vendedor:
+            continue
+
+        resultado.append(s.to_dict())
+
+    return jsonify(resultado), 200
+
+# @solicitudes_stock_bp.route("/<int:solicitud_id>/recibido", methods=["PATCH"])
+# @login_required
+# @roles_required("vendedor")
+# def marcar_solicitud_como_recibida(solicitud_id):
+#     solicitud = SolicitudStock.query.get(solicitud_id)
+
+#     if not solicitud:
+#         return jsonify({"error": "Solicitud no encontrada"}), 404
+
+#     if solicitud.usuario_id != current_user.id:
+#         return jsonify({"error": "No autorizado para esta solicitud"}), 403
+
+#     if solicitud.estado != "aprobada":
+#         return jsonify({"error": "Solo se pueden marcar como recibidas solicitudes aprobadas"}), 400
+
+#     if solicitud.recibido_por_vendedor:
+#         return jsonify({"error": "La solicitud ya fue marcada como recibida"}), 400
+
+#     try:
+#         solicitud.recibido_por_vendedor = True
+#         db.session.commit()
+
+#         return jsonify({
+#             "mensaje": "Solicitud marcada como recibida",
+#             "solicitud": solicitud.to_dict()
+#         }), 200
+
+#     except Exception:
+#         db.session.rollback()
+#         return jsonify({"error": "Ocurrió un error al marcar la solicitud como recibida"}), 500
+
+@solicitudes_stock_bp.route("/<int:solicitud_id>/recibido", methods=["PATCH"])
+@login_required
+@roles_required("vendedor")
+def marcar_solicitud_como_recibida(solicitud_id):
+    solicitud = SolicitudStock.query.get(solicitud_id)
+
+    if not solicitud:
+        return jsonify({"error": "Solicitud no encontrada"}), 404
+
+    if solicitud.usuario_id != current_user.id:
+        return jsonify({"error": "No autorizado"}), 403
+
+    if solicitud.estado not in ["aprobada", "rechazada"]:
+        return jsonify({"error": "Solo solicitudes procesadas pueden marcarse como recibidas"}), 400
+
+    try:
+        solicitud.recibido_por_vendedor = True
+        db.session.commit()
+
+        return jsonify({"ok": True}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("ERROR:", e)
+        return jsonify({"error": "Error interno"}), 500

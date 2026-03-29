@@ -12,6 +12,7 @@ class SolicitudStock(db.Model):
     estado = db.Column(db.String(30), nullable=False, default="pendiente")
     observaciones = db.Column(db.Text, nullable=True)
     fecha_creacion = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    recibido_por_vendedor = db.Column(db.Boolean, nullable=False, default=False)
 
     usuario = db.relationship("Usuario", backref="solicitudes_stock")
     producto = db.relationship("Producto", backref="solicitudes_stock")
@@ -27,4 +28,5 @@ class SolicitudStock(db.Model):
             "estado": self.estado,
             "observaciones": self.observaciones,
             "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
+            "recibido_por_vendedor": self.recibido_por_vendedor,
         }
