@@ -3,18 +3,20 @@ from flask import Flask, render_template
 from flask_login import login_required, current_user
 from flask import abort
 from app.config import Config
-from app.extensions import db, migrate
+# from app.extensions import db, migrate
 from app.routes.clientes import clientes_bp
 from app.routes.categorias import categorias_bp
 from app.routes.productos import productos_bp
 from app.routes.usuarios import usuarios_bp
 from app.routes.ventas import ventas_bp
 from app.routes.dashboard import dashboard_bp
-from app.extensions import db, migrate, login_manager
+from app.extensions import db, migrate, login_manager, socketio
 from app.models.usuario import Usuario
 from app.routes.auth import auth_bp
 from app.routes.solicitudes_stock import solicitudes_stock_bp
+from app.socket_events import register_socket_events
 from app import models
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -32,6 +34,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    socketio.init_app(app)
+    register_socket_events()
 
     @login_manager.user_loader
     def load_user(user_id):

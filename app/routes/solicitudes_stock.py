@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from sqlalchemy import func
 
-from app.extensions import db
+from app.extensions import db, socketio
 from app.models.producto import Producto
 from app.models.solicitud_stock import SolicitudStock
 from app.utils.auth import roles_required
@@ -51,6 +51,18 @@ def crear_solicitud_stock():
 
     db.session.add(solicitud)
     db.session.commit()
+
+    socketio.emit(
+        "solicitud_stock_nueva",
+        {
+            "id": solicitud.id,
+            "producto": solicitud.producto.nombre if solicitud.producto else None,
+            "cantidad": solicitud.cantidad,
+            "usuario": current_user.nombre,
+            "estado": solicitud.estado,
+        },
+        room="admins"
+    )
 
     return jsonify(solicitud.to_dict()), 201
 
@@ -103,11 +115,38 @@ def aprobar_solicitud_stock(solicitud_id):
 
         db.session.commit()
 
+        socketio.emit(
+            "solicitud_stock_actualizada",
+            {
+                "id": solicitud.id,
+                "estado": solicitud.estado,
+                "producto": producto.nombre,
+                "cantidad": solicitud.cantidad,
+                "usuario_id": solicitud.usuario_id,
+                "stock_actual": producto.stock_actual,
+            },
+            room="admins"
+        )
+
+        socketio.emit(
+            "solicitud_stock_actualizada",
+            {
+                "id": solicitud.id,
+                "estado": solicitud.estado,
+                "producto": producto.nombre,
+                "cantidad": solicitud.cantidad,
+                "usuario_id": solicitud.usuario_id,
+                "stock_actual": producto.stock_actual,
+            },
+            room=f"vendedor_{solicitud.usuario_id}"
+        )
+
         return jsonify({
             "mensaje": "Solicitud aprobada correctamente",
             "solicitud": solicitud.to_dict(),
             "stock_actual": producto.stock_actual
         }), 200
+
 
     except Exception:
         db.session.rollback()
@@ -128,7 +167,32 @@ def rechazar_solicitud_stock(solicitud_id):
 
     try:
         solicitud.estado = "rechazada"
+
         db.session.commit()
+
+        socketio.emit(
+            "solicitud_stock_actualizada",
+            {
+                "id": solicitud.id,
+                "estado": solicitud.estado,
+                "producto": solicitud.producto.nombre if solicitud.producto else None,
+                "cantidad": solicitud.cantidad,
+                "usuario_id": solicitud.usuario_id,
+            },
+            room="admins"
+        )
+
+        socketio.emit(
+            "solicitud_stock_actualizada",
+            {
+                "id": solicitud.id,
+                "estado": solicitud.estado,
+                "producto": solicitud.producto.nombre if solicitud.producto else None,
+                "cantidad": solicitud.cantidad,
+                "usuario_id": solicitud.usuario_id,
+            },
+            room=f"vendedor_{solicitud.usuario_id}"
+        )
 
         return jsonify({
             "mensaje": "Solicitud rechazada correctamente",
@@ -138,29 +202,6 @@ def rechazar_solicitud_stock(solicitud_id):
     except Exception:
         db.session.rollback()
         return jsonify({"error": "Ocurrió un error al rechazar la solicitud"}), 500
-
-# @solicitudes_stock_bp.route("/mis-notificaciones", methods=["GET"])
-# @login_required
-# @roles_required("vendedor")
-# def mis_notificaciones_solicitudes_stock():
-#     solicitudes = (
-#         SolicitudStock.query
-#         .filter(SolicitudStock.usuario_id == current_user.id)
-#         .filter(
-#             db.or_(
-#                 db.and_(
-#                     SolicitudStock.estado == "aprobada",
-#                     SolicitudStock.recibido_por_vendedor == False
-#                 ),
-#                 SolicitudStock.estado == "rechazada"
-#             )
-#         )
-#         .order_by(SolicitudStock.id.desc())
-#         .limit(5)
-#         .all()
-#     )
-
-#     return jsonify([solicitud.to_dict() for solicitud in solicitudes]), 200
 
 @solicitudes_stock_bp.route("/mis-notificaciones", methods=["GET"])
 @login_required
@@ -189,37 +230,6 @@ def mis_notificaciones_solicitudes_stock():
 
     return jsonify(resultado), 200
 
-# @solicitudes_stock_bp.route("/<int:solicitud_id>/recibido", methods=["PATCH"])
-# @login_required
-# @roles_required("vendedor")
-# def marcar_solicitud_como_recibida(solicitud_id):
-#     solicitud = SolicitudStock.query.get(solicitud_id)
-
-#     if not solicitud:
-#         return jsonify({"error": "Solicitud no encontrada"}), 404
-
-#     if solicitud.usuario_id != current_user.id:
-#         return jsonify({"error": "No autorizado para esta solicitud"}), 403
-
-#     if solicitud.estado != "aprobada":
-#         return jsonify({"error": "Solo se pueden marcar como recibidas solicitudes aprobadas"}), 400
-
-#     if solicitud.recibido_por_vendedor:
-#         return jsonify({"error": "La solicitud ya fue marcada como recibida"}), 400
-
-#     try:
-#         solicitud.recibido_por_vendedor = True
-#         db.session.commit()
-
-#         return jsonify({
-#             "mensaje": "Solicitud marcada como recibida",
-#             "solicitud": solicitud.to_dict()
-#         }), 200
-
-#     except Exception:
-#         db.session.rollback()
-#         return jsonify({"error": "Ocurrió un error al marcar la solicitud como recibida"}), 500
-
 @solicitudes_stock_bp.route("/<int:solicitud_id>/recibido", methods=["PATCH"])
 @login_required
 @roles_required("vendedor")
@@ -238,6 +248,24 @@ def marcar_solicitud_como_recibida(solicitud_id):
     try:
         solicitud.recibido_por_vendedor = True
         db.session.commit()
+
+        socketio.emit(
+            "solicitud_stock_recibida",
+            {
+                "id": solicitud.id,
+                "usuario_id": solicitud.usuario_id,
+            },
+            room="admins"
+        )
+
+        socketio.emit(
+            "solicitud_stock_recibida",
+            {
+                "id": solicitud.id,
+                "usuario_id": solicitud.usuario_id,
+            },
+            room=f"vendedor_{solicitud.usuario_id}"
+        )
 
         return jsonify({"ok": True}), 200
 

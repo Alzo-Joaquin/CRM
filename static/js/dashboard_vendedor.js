@@ -1,81 +1,99 @@
-const alerta = document.getElementById("alerta-vendedor-solicitudes");
-const lista = document.getElementById("alerta-vendedor-lista");
+const alertaVendedor = document.getElementById("alerta-vendedor-solicitudes");
+const alertaVendedorLista = document.getElementById("alerta-vendedor-lista");
 
-async function cargar() {
+async function cargarNotificacionesSolicitudesVendedor() {
   try {
-    const res = await fetch("/solicitudes-stock/mis-notificaciones");
-    const data = await res.json();
+    const response = await fetch("/solicitudes-stock/mis-notificaciones");
+    const solicitudes = await response.json();
 
-    if (!res.ok || data.length === 0) {
-      alerta.classList.add("alerta-vendedor-oculta");
+    if (!response.ok || !solicitudes.length) {
+      if (alertaVendedor) {
+        alertaVendedor.classList.add("alerta-vendedor-oculta");
+      }
       return;
     }
 
-    lista.innerHTML = "";
+    if (!alertaVendedorLista) return;
 
-    data.forEach(s => {
-      const div = document.createElement("div");
-      div.className = "alerta-vendedor-item";
+    alertaVendedorLista.innerHTML = "";
+
+    solicitudes.forEach(solicitud => {
+      const item = document.createElement("div");
+      item.className = "alerta-vendedor-item";
 
       let html = "";
 
-      if (s.estado === "aprobada") {
+      if (solicitud.estado === "aprobada") {
         html = `
           <div class="alerta-vendedor-item-contenido">
             <p>
-              ${s.producto} (${s.cantidad})
-              <span class="ok">APROBADA</span>
+              ${solicitud.producto} (${solicitud.cantidad})
+              <span class="texto-aprobado">ha sido aprobada</span>
             </p>
-            <button class="btn-recibido" data-id="${s.id}">
+            <button class="boton vendedor-boton boton-recibido" data-id="${solicitud.id}">
               Recibido
             </button>
           </div>
         `;
       }
 
-      if (s.estado === "rechazada") {
+      if (solicitud.estado === "rechazada") {
         html = `
           <div class="alerta-vendedor-item-contenido">
             <p>
-              ${s.producto} (${s.cantidad})
-              <span class="error">RECHAZADA</span>
+              ${solicitud.producto} (${solicitud.cantidad})
+              <span class="texto-rechazado">ha sido rechazada</span>
             </p>
-            <button class="btn-recibido" data-id="${s.id}">
+            <button class="boton vendedor-boton boton-recibido" data-id="${solicitud.id}">
               Recibido
             </button>
           </div>
         `;
       }
 
-      div.innerHTML = html;
-      lista.appendChild(div);
+      item.innerHTML = html;
+      alertaVendedorLista.appendChild(item);
     });
 
-    bind();
-    alerta.classList.remove("alerta-vendedor-oculta");
+    vincularBotonesRecibido();
 
-  } catch (e) {
-    console.error(e);
+    if (alertaVendedor) {
+      alertaVendedor.classList.remove("alerta-vendedor-oculta");
+    }
+  } catch (error) {
+    console.error("Error cargando notificaciones del vendedor:", error);
   }
 }
 
-function bind() {
-  document.querySelectorAll(".btn-recibido").forEach(btn => {
-    btn.onclick = async () => {
+function vincularBotonesRecibido() {
+  document.querySelectorAll(".boton-recibido").forEach(btn => {
+    btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
-
-      const res = await fetch(`/solicitudes-stock/${id}/recibido`, {
-        method: "PATCH"
-      });
-
-      if (!res.ok) {
-        alert("Error al marcar como recibido");
-        return;
-      }
-
-      cargar(); // refresca
-    };
+      await marcarComoRecibido(id);
+    });
   });
 }
 
-cargar();
+async function marcarComoRecibido(id) {
+  try {
+    const response = await fetch(`/solicitudes-stock/${id}/recibido`, {
+      method: "PATCH"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "No se pudo marcar como recibido.");
+      return;
+    }
+
+    await cargarNotificacionesSolicitudesVendedor();
+  } catch (error) {
+    console.error("Error marcando solicitud como recibida:", error);
+  }
+}
+
+cargarNotificacionesSolicitudesVendedor();
+
+// La dejamos explícitamente global para que socket_vendedor.js la vea sí o sí
+window.cargarNotificacionesSolicitudesVendedor = cargarNotificacionesSolicitudesVendedor;
