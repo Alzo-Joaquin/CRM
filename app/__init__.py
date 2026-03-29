@@ -13,6 +13,7 @@ from app.routes.dashboard import dashboard_bp
 from app.extensions import db, migrate, login_manager
 from app.models.usuario import Usuario
 from app.routes.auth import auth_bp
+from app.routes.solicitudes_stock import solicitudes_stock_bp
 from app import models
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,6 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
 
 def create_app():
-    # app = Flask(
-    #     __name__,
-    #     template_folder="../templates",
-    #     static_folder="../static"
-    #     )
-    # app.config.from_object(Config)
     app = Flask(
         __name__,
         template_folder=str(TEMPLATES_DIR),
@@ -49,11 +44,14 @@ def create_app():
     app.register_blueprint(ventas_bp, url_prefix="/ventas")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
     app.register_blueprint(auth_bp)
+    app.register_blueprint(solicitudes_stock_bp, url_prefix="/solicitudes-stock")
 
     @app.route("/")
     @login_required
     def home():
-        return render_template("index.html")
+        if current_user.rol == "admin":
+            return render_template("dashboard_admin.html")
+        return render_template("dashboard_vendedor.html")
     
     @app.route("/clientes-ui")
     @login_required
@@ -78,5 +76,19 @@ def create_app():
         if current_user.rol != "admin":
             abort(403)
         return render_template("usuarios.html")
+    
+    @app.route("/solicitudes-stock-ui")
+    @login_required
+    def solicitudes_stock_ui():
+        if current_user.rol != "vendedor":
+            abort(403)
+        return render_template("solicitudes_stock.html")
+    
+    @app.route("/solicitudes-stock-admin-ui")
+    @login_required
+    def solicitudes_stock_admin_ui():
+        if current_user.rol != "admin":
+            abort(403)
+        return render_template("solicitudes_stock_admin.html")
 
     return app

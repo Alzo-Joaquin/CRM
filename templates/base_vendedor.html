@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Panel Vendedor{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="vendedor-body">
+  <div class="layout">
+    
+      <div>
+        <div class="sidebar-header">
+          <div class="logo-box logo-box-vendedor">VEN</div>
+          <div>
+            <h2>Panel Vendedor</h2>
+            <p>Operación comercial</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <p>{{ current_user.nombre }}</p>
+        <small>Rol: {{ current_user.rol }}</small>
+        <div class="sidebar-footer-actions">
+          <a href="{{ url_for('auth.logout') }}" class="logout-link logout-link-vendedor">Cerrar sesión</a>
+        </div>
+      </div>
+
+
+    <main class="main-content">
+      <header class="topbar topbar-vendedor">
+        <div>
+          <h1>{% block page_title %}Panel de Ventas{% endblock %}</h1>
+          <p class="topbar-subtitle">{% block page_subtitle %}Espacio de trabajo del vendedor{% endblock %}</p>
+        </div>
+      </header>
+
+      <section class="content-area">
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

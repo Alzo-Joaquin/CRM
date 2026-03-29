@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Panel Admin{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="admin-body">
+  <div class="layout">
+    <aside class="sidebar sidebar-admin">
+      <div>
+        <div class="sidebar-header">
+          <div class="logo-box">ADM</div>
+          <div>
+            <h2>Panel Admin</h2>
+            <p>Control del negocio</p>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="/" class="nav-link">📊 <span>Dashboard</span></a>
+          <a href="/clientes-ui" class="nav-link">👥 <span>Clientes</span></a>
+          <a href="/productos-ui" class="nav-link">📦 <span>Productos</span></a>
+          <a href="/ventas-ui" class="nav-link">💰 <span>Ventas</span></a>
+          <a href="/usuarios-ui" class="nav-link">🔐 <span>Usuarios</span></a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <p>{{ current_user.nombre }}</p>
+        <small>Rol: {{ current_user.rol }}</small>
+        <div class="sidebar-footer-actions">
+          <a href="{{ url_for('auth.logout') }}" class="logout-link">Cerrar sesión</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar topbar-admin">
+        <div>
+          <h1>{% block page_title %}Panel de Administración{% endblock %}</h1>
+          <p class="topbar-subtitle">{% block page_subtitle %}Gestión global del sistema{% endblock %}</p>
+        </div>
+      </header>
+
+      <section class="content-area">
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

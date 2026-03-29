@@ -1,0 +1,39 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Solicitudes de Stock{% endblock %}
+{% block page_title %}Solicitudes de Stock{% endblock %}
+{% block page_subtitle %}Gestión de pedidos realizados por vendedores{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Solicitudes pendientes y procesadas</h2>
+        <span class="info-badge">Admin</span>
+      </div>
+      <button class="boton" id="btn-recargar-solicitudes-admin">Recargar</button>
+    </div>
+
+    <p id="mensaje-solicitudes-admin"></p>
+
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Vendedor</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-solicitudes-admin"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/solicitudes_stock_admin.js') }}"></script>
+{% endblock %}

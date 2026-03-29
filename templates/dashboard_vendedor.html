@@ -1,0 +1,93 @@
+{% extends "base_dashboard_vendedor.html" %}
+
+{% block title %}Panel Vendedor{% endblock %}
+{% block page_title %}Mi Panel de Ventas{% endblock %}
+{% block page_subtitle %}Registrá operaciones y trabajá con tus clientes{% endblock %}
+
+{% block content %}
+  <div class="hero-panel hero-vendedor">
+    <div>
+      <p class="hero-kicker">Operación comercial</p>
+      <h2 class="hero-title">Dashboard operativo de ventas</h2>
+      <p class="hero-text">
+        Desde este panel podés registrar nuevas ventas, crear clientes y consultar tu actividad comercial diaria.
+      </p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card vendedor-card vendedor-card-destacado">
+      <h2>Nueva venta</h2>
+      <p>Registrá una operación sobre el stock disponible del sistema.</p>
+      <a class="boton vendedor-boton" href="/ventas-ui">Registrar venta</a>
+    </div>
+
+    <div class="card vendedor-card">
+      <h2>Clientes</h2>
+      <p>Creá nuevos clientes y consultá la base actual para facturación.</p>
+      <a class="boton vendedor-boton" href="/clientes-ui">Gestionar clientes</a>
+    </div>
+
+    <div class="card vendedor-card">
+      <h2>Mis ventas</h2>
+      <p>Consultá tu actividad comercial y el historial de operaciones registradas.</p>
+      <a class="boton vendedor-boton" href="/ventas-ui">Ver ventas</a>
+    </div>
+
+    <div class="card vendedor-card">
+      <h2>Solicitar stock</h2>
+      <p>Pedí al administrador reposición o disponibilidad de productos.</p>
+      <a class="boton vendedor-boton" href="/solicitudes-stock-ui">Solicitar stock</a>
+    </div>
+    
+  </div>
+
+  <div class="dashboard-grid dashboard-grid-large">
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Flujo de trabajo</h2>
+        <span class="info-badge">Operativo</span>
+      </div>
+
+      <div class="quick-actions">
+        <div class="quick-action-card no-link-card">
+          <div class="quick-action-icon">1</div>
+          <div>
+            <h3>Elegí o creá un cliente</h3>
+            <p>Buscá al cliente existente o registrá uno nuevo antes de facturar.</p>
+          </div>
+        </div>
+
+        <div class="quick-action-card no-link-card">
+          <div class="quick-action-icon">2</div>
+          <div>
+            <h3>Registrá la venta</h3>
+            <p>Cargá producto, cantidad y completá la operación comercial.</p>
+          </div>
+        </div>
+
+        <div class="quick-action-card no-link-card">
+          <div class="quick-action-icon">3</div>
+          <div>
+            <h3>Enviá el comprobante</h3>
+            <p>Compartí el detalle de la compra por mail al cliente si corresponde.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Tu rol</h2>
+        <span class="info-badge">Vendedor</span>
+      </div>
+
+      <ul class="status-list">
+        <li><span>Ventas</span><strong>Habilitadas</strong></li>
+        <li><span>Clientes</span><strong>Gestionables</strong></li>
+        <li><span>Productos</span><strong>Solo uso operativo</strong></li>
+        <li><span>Usuarios</span><strong>Sin acceso</strong></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

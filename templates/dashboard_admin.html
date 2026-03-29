@@ -1,0 +1,112 @@
+{% extends "base_dashboard_admin.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+{% block page_title %}Dashboard Administrativo{% endblock %}
+{% block page_subtitle %}Visión global del negocio y accesos de gestión:
+Desde este panel podés supervisar ventas, productos, usuarios y clientes para gestionar el estado general de la operación.
+{% endblock %}
+
+{% block content %}
+
+  <div id="alerta-solicitudes-stock" class="alerta-admin alerta-admin-oculta">
+    <div class="alerta-admin-contenido">
+      <div>
+        <p class="alerta-admin-kicker">Aviso operativo</p>
+        <h3 id="alerta-solicitudes-titulo">Solicitudes de stock pendientes</h3>
+        <p id="alerta-solicitudes-texto">
+          Tenés solicitudes de reposición o disponibilidad esperando revisión.
+        </p>
+      </div>
+
+      <a href="/solicitudes-stock-admin-ui" class="boton">Revisarlas</a>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Clientes</div>
+      <div class="stat-value" id="kpi-clientes">--</div>
+      <div class="stat-description">Clientes registrados en el sistema</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Productos</div>
+      <div class="stat-value" id="kpi-productos">--</div>
+      <div class="stat-description">Catálogo activo disponible</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Unidades vendidas</div>
+      <div class="stat-value" id="kpi-unidades">--</div>
+      <div class="stat-description">Total acumulado de unidades</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Ventas del día</div>
+      <div class="stat-value" id="kpi-ventas-hoy">--</div>
+      <div class="stat-description">Operaciones registradas hoy</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid dashboard-grid-large">
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Accesos administrativos</h2>
+        <span class="info-badge">Admin</span>
+      </div>
+
+      <div class="quick-actions">
+
+        <a class="quick-action-card" href="/ventas-ui">
+          <div class="quick-action-icon">💰</div>
+          <div>
+            <h3>Ventas</h3>
+            <p>Consultá operaciones y monitoreá el flujo comercial.</p>
+          </div>
+        </a>
+
+        <a class="quick-action-card" href="/productos-ui">
+          <div class="quick-action-icon">📦</div>
+          <div>
+            <h3>Productos</h3>
+            <p>Gestioná catálogo, stock, costos y precios.</p>
+          </div>
+        </a>
+
+        <a class="quick-action-card" href="/usuarios-ui">
+          <div class="quick-action-icon">🔐</div>
+          <div>
+            <h3>Usuarios</h3>
+            <p>Administrá cuentas, roles y accesos del sistema.</p>
+          </div>
+        </a>
+
+        <a class="quick-action-card" href="/clientes-ui">
+          <div class="quick-action-icon">👥</div>
+          <div>
+            <h3>Clientes</h3>
+            <p>Administrá tus clientes.</p>
+          </div>
+        </a>        
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title-row">
+        <h2>Estado del sistema</h2>
+        <span class="info-badge">Control</span>
+      </div>
+
+      <ul class="status-list">
+        <li><span>Usuarios</span><strong>Gestionables</strong></li>
+        <li><span>Productos</span><strong>Bajo control</strong></li>
+        <li><span>Ventas</span><strong>Monitoreadas</strong></li>
+        <li><span>Base de datos</span><strong>Operativa</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard_admin.js') }}"></script>
+{% endblock %}

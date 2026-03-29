@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard Admin{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="admin-body">
+  <main class="main-content full-width-admin">
+    <header class="topbar topbar-admin">
+      <div class="topbar-dashboard-admin">
+        <div>
+          <h1>{% block page_title %}Dashboard Administrativo{% endblock %}</h1>
+          <p class="topbar-subtitle">{% block page_subtitle %}Centro de control del negocio{% endblock %}</p>
+        </div>
+
+        <div class="topbar-admin-user">
+          <div>
+            <strong>{{ current_user.nombre }}</strong><br>
+            <small>Rol: {{ current_user.rol }}</small>
+          </div>
+          <a href="{{ url_for('auth.logout') }}" class="logout-link logout-link-admin-top">Cerrar sesión</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="content-area dashboard-admin-content">
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+</body>
+</html>

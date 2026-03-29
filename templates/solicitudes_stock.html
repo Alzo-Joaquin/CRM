@@ -1,0 +1,64 @@
+{% extends "base_vendedor.html" %}
+
+{% block title %}Solicitar Stock{% endblock %}
+{% block page_title %}Solicitud de Stock{% endblock %}
+{% block page_subtitle %}Pedí reposición o disponibilidad de productos{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2>Nueva solicitud</h2>
+
+    <form id="form-solicitud-stock">
+      <div class="form-grid">
+        <div class="campo">
+          <label for="producto_id">Producto</label>
+          <select id="producto_id" required>
+            <option value="">Seleccionar producto</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="cantidad">Cantidad solicitada</label>
+          <input type="number" id="cantidad" min="1" required>
+        </div>
+
+        <div class="campo campo-completo">
+          <label for="observaciones">Observaciones</label>
+          <textarea id="observaciones" rows="4" placeholder="Opcional"></textarea>
+        </div>
+      </div>
+
+      <button class="boton vendedor-boton" type="submit">Enviar solicitud</button>
+    </form>
+
+    <p id="mensaje-solicitud-stock"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h2>Mis solicitudes</h2>
+        <span class="info-badge">Vendedor</span>
+      </div>
+      <button class="boton vendedor-boton" id="btn-recargar-solicitudes">Recargar</button>
+    </div>
+
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-solicitudes-stock"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/solicitudes_stock.js') }}"></script>
+{% endblock %}

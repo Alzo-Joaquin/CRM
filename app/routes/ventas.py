@@ -8,7 +8,7 @@ from app.models.venta import Venta
 from app.models.detalle_venta import DetalleVenta
 from app.utils.auth import roles_required
 from app.services.email_service import enviar_mail_venta
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 ventas_bp = Blueprint("ventas", __name__)
 
@@ -157,7 +157,65 @@ def crear_venta():
         ]
     }), 201
 
+# @ventas_bp.route("", methods=["GET"])
+# @login_required
+# @roles_required("admin", "vendedor")
+# def listar_ventas():
+#     try:
+#         page = int(request.args.get("page", 1))
+#         limit = int(request.args.get("limit", 5))
+#     except ValueError:
+#         return jsonify({"error": "Los parámetros 'page' y 'limit' deben ser enteros"}), 400
+
+#     if page < 1 or limit < 1:
+#         return jsonify({"error": "Los parámetros 'page' y 'limit' deben ser mayores a cero"}), 400
+
+#     total = Venta.query.count()
+#     pages = ceil(total / limit) if total > 0 else 1
+#     offset = (page - 1) * limit
+
+#     ventas = (
+#         Venta.query
+#         .order_by(Venta.id.asc())
+#         .offset(offset)
+#         .limit(limit)
+#         .all()
+#     )
+
+#     resultado = []
+#     for venta in ventas:
+#         resultado.append({
+#             "id": venta.id,
+#             "fecha": venta.fecha.isoformat() if venta.fecha else None,
+#             "total": float(venta.total),
+#             "estado": venta.estado,
+#             "cliente_id": venta.cliente_id,
+#             "cliente": f"{venta.cliente.nombre} {venta.cliente.apellido}",
+#             "usuario_id": venta.usuario_id,
+#             "usuario": venta.usuario.nombre,
+#             "items": [
+#                 {
+#                     "producto_id": detalle.producto_id,
+#                     "producto": detalle.producto.nombre,
+#                     "cantidad": detalle.cantidad,
+#                     "precio_unitario": float(detalle.precio_unitario),
+#                     "subtotal": float(detalle.subtotal)
+#                 }
+#                 for detalle in venta.detalles
+#             ]
+#         })
+
+#     return jsonify({
+#         "page": page,
+#         "limit": limit,
+#         "total": total,
+#         "pages": pages,
+#         "results": resultado
+#     }), 200
+
 @ventas_bp.route("", methods=["GET"])
+@login_required
+@roles_required("admin", "vendedor")
 def listar_ventas():
     try:
         page = int(request.args.get("page", 1))
@@ -168,12 +226,17 @@ def listar_ventas():
     if page < 1 or limit < 1:
         return jsonify({"error": "Los parámetros 'page' y 'limit' deben ser mayores a cero"}), 400
 
-    total = Venta.query.count()
+    query = Venta.query
+
+    if current_user.rol != "admin":
+        query = query.filter(Venta.usuario_id == current_user.id)
+
+    total = query.count()
     pages = ceil(total / limit) if total > 0 else 1
     offset = (page - 1) * limit
 
     ventas = (
-        Venta.query
+        query
         .order_by(Venta.id.asc())
         .offset(offset)
         .limit(limit)
@@ -182,13 +245,17 @@ def listar_ventas():
 
     resultado = []
     for venta in ventas:
+        nombre_cliente = venta.cliente.nombre
+        if hasattr(venta.cliente, "apellido") and venta.cliente.apellido:
+            nombre_cliente = f"{venta.cliente.nombre} {venta.cliente.apellido}"
+
         resultado.append({
             "id": venta.id,
             "fecha": venta.fecha.isoformat() if venta.fecha else None,
             "total": float(venta.total),
             "estado": venta.estado,
             "cliente_id": venta.cliente_id,
-            "cliente": f"{venta.cliente.nombre} {venta.cliente.apellido}",
+            "cliente": nombre_cliente,
             "usuario_id": venta.usuario_id,
             "usuario": venta.usuario.nombre,
             "items": [
