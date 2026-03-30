@@ -1894,6 +1894,7 @@ button:disabled {
     margin: 0;
     background: linear-gradient(to right, #60a5fa, #a855f7);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
