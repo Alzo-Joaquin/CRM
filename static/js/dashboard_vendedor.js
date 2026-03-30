@@ -6,9 +6,10 @@ async function cargarNotificacionesSolicitudesVendedor() {
     const response = await fetch("/solicitudes-stock/mis-notificaciones");
     const solicitudes = await response.json();
 
+    // Cambiamos "vo-alert-hidden" por "vs-alert-hidden"
     if (!response.ok || !solicitudes.length) {
       if (alertaVendedor) {
-        alertaVendedor.classList.add("alerta-vendedor-oculta");
+        alertaVendedor.classList.add("vs-alert-hidden");
       }
       return;
     }
@@ -19,46 +20,38 @@ async function cargarNotificacionesSolicitudesVendedor() {
 
     solicitudes.forEach(solicitud => {
       const item = document.createElement("div");
-      item.className = "alerta-vendedor-item";
+      // Clase para el contenedor de la notificación (estilo profesional vs)
+      item.className = "vs-notification-item"; 
 
-      let html = "";
+      let statusColor = solicitud.estado === "aprobada" ? "#10b981" : "#ef4444";
+      let textClass = solicitud.estado === "aprobada" ? "vs-text-success" : "vs-text-danger";
 
-      if (solicitud.estado === "aprobada") {
-        html = `
-          <div class="alerta-vendedor-item-contenido">
-            <p>
-              ${solicitud.producto} (${solicitud.cantidad})
-              <span class="texto-aprobado">ha sido aprobada</span>
-            </p>
-            <button class="boton vendedor-boton boton-recibido" data-id="${solicitud.id}">
-              Recibido
-            </button>
+      item.innerHTML = `
+          <div style="flex: 1; display: flex; align-items: center; gap: 12px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${statusColor};"></div>
+            <div>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--vs-text-main);">
+                <strong>${solicitud.producto}</strong> (${solicitud.cantidad})
+              </p>
+              <small class="${textClass}" style="text-transform: uppercase; font-weight: 700; font-size: 0.7rem;">
+                Ha sido ${solicitud.estado}
+              </small>
+            </div>
           </div>
-        `;
-      }
+          <button class="vs-btn-recibido boton-recibido" 
+                  data-id="${solicitud.id}">
+            Entendido
+          </button>
+      `;
 
-      if (solicitud.estado === "rechazada") {
-        html = `
-          <div class="alerta-vendedor-item-contenido">
-            <p>
-              ${solicitud.producto} (${solicitud.cantidad})
-              <span class="texto-rechazado">ha sido rechazada</span>
-            </p>
-            <button class="boton vendedor-boton boton-recibido" data-id="${solicitud.id}">
-              Recibido
-            </button>
-          </div>
-        `;
-      }
-
-      item.innerHTML = html;
       alertaVendedorLista.appendChild(item);
     });
 
     vincularBotonesRecibido();
 
     if (alertaVendedor) {
-      alertaVendedor.classList.remove("alerta-vendedor-oculta");
+      // Cambiamos "vo-alert-hidden" por "vs-alert-hidden"
+      alertaVendedor.classList.remove("vs-alert-hidden");
     }
   } catch (error) {
     console.error("Error cargando notificaciones del vendedor:", error);

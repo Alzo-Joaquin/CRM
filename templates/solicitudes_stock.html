@@ -1,12 +1,16 @@
-{% extends "base_vendedor.html" %}
+{% extends "base.html" %}
 
-{% block title %}Solicitar Stock{% endblock %}
+{% block title %}Solicitar Stock - CRM{% endblock %}
+
 {% block page_title %}Solicitud de Stock{% endblock %}
-{% block page_subtitle %}Pedí reposición o disponibilidad de productos{% endblock %}
+{% block page_subtitle %}Pedí reposición o disponibilidad de productos directamente al administrador{% endblock %}
 
 {% block content %}
   <div class="card">
-    <h2>Nueva solicitud</h2>
+    <div class="section-title-row">
+        <h2>Nueva solicitud</h2>
+        <span class="info-badge">Formulario operativo</span>
+    </div>
 
     <form id="form-solicitud-stock">
       <div class="form-grid">
@@ -19,28 +23,28 @@
 
         <div class="campo">
           <label for="cantidad">Cantidad solicitada</label>
-          <input type="number" id="cantidad" min="1" required>
+          <input type="number" id="cantidad" min="1" required placeholder="Ej: 10">
         </div>
 
         <div class="campo campo-completo">
           <label for="observaciones">Observaciones</label>
-          <textarea id="observaciones" rows="4" placeholder="Opcional"></textarea>
+          <textarea id="observaciones" rows="3" placeholder="Detalles adicionales (opcional)"></textarea>
         </div>
       </div>
 
       <button class="boton vendedor-boton" type="submit">Enviar solicitud</button>
     </form>
 
-    <p id="mensaje-solicitud-stock"></p>
+    <p id="mensaje-solicitud-stock" style="margin-top: 15px;"></p>
   </div>
 
   <div class="card">
     <div class="card-header">
       <div>
-        <h2>Mis solicitudes</h2>
-        <span class="info-badge">Vendedor</span>
+        <h2>Mis solicitudes recientes</h2>
+        <p class="topbar-subtitle">Historial de pedidos realizados</p>
       </div>
-      <button class="boton vendedor-boton" id="btn-recargar-solicitudes">Recargar</button>
+      <button class="boton secundario" id="btn-recargar-solicitudes">Actualizar lista</button>
     </div>
 
     <div class="tabla-wrapper">
@@ -55,13 +59,14 @@
             <th>Fecha</th>
           </tr>
         </thead>
-        <tbody id="tabla-solicitudes-stock"></tbody>
+        <tbody id="tabla-solicitudes-stock">
+            </tbody>
       </table>
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/solicitudes_stock.js') }}"></script>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="{{ url_for('static', filename='js/solicitudes_stock.js') }}"></script>
   <script src="{{ url_for('static', filename='js/socket_vendedor.js') }}"></script>
 
 {% endblock %}

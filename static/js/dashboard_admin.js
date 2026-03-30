@@ -14,7 +14,8 @@ async function cargarAlertaSolicitudesStock() {
     if (data.pendientes > 0) {
       alertaTitulo.textContent = `Tenés ${data.pendientes} solicitud${data.pendientes === 1 ? "" : "es"} de stock pendiente${data.pendientes === 1 ? "" : "s"}`;
       alertaTexto.textContent = "Hay pedidos de reposición o disponibilidad cargados por vendedores que todavía no fueron revisados.";
-      alertaSolicitudes.classList.remove("alerta-admin-oculta");
+      // alertaSolicitudes.classList.remove("alerta-admin-oculta");
+      alertaSolicitudes.classList.remove("db-alert-hidden");
     }
   } catch (error) {
     console.error("Error cargando alerta de solicitudes:", error);

@@ -3,31 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Dashboard Admin{% endblock %}</title>
+  <title>{% block title %}Panel de Control Admin{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
-  <main class="main-content full-width-admin">
-    <header class="topbar topbar-admin">
-      <div class="topbar-dashboard-admin">
-        <div>
-          <h1>{% block page_title %}Dashboard Administrativo{% endblock %}</h1>
-          <p class="topbar-subtitle">{% block page_subtitle %}Centro de control del negocio{% endblock %}</p>
+<body class="db-admin-theme">
+
+  <main class="db-viewport">
+    <header class="db-header-full">
+      <div class="db-header-container">
+        <div class="db-title-group">
+          <h1 class="db-main-title">{% block page_title %}Dashboard Administrativo{% endblock %}</h1>
+          <p class="db-tagline">{% block page_subtitle %}Centro de control del negocio{% endblock %}</p>
         </div>
 
-        <div class="topbar-admin-user">
-          <div>
-            <strong>{{ current_user.nombre }}</strong><br>
-            <small>Rol: {{ current_user.rol }}</small>
+        <div class="db-user-identity">
+          <div class="db-user-info">
+            <span class="db-user-name">{{ current_user.nombre }}</span>
+            <span class="db-user-badge">{{ current_user.rol }}</span>
           </div>
-          <a href="{{ url_for('auth.logout') }}" class="logout-link logout-link-admin-top">Cerrar sesión</a>
+          <a href="{{ url_for('auth.logout') }}" class="db-logout-btn">
+             <span>Salir del Panel</span>
+          </a>
         </div>
       </div>
     </header>
 
-    <section class="content-area dashboard-admin-content">
+    <section class="db-canvas">
       {% block content %}{% endblock %}
     </section>
   </main>
+
 </body>
 </html>

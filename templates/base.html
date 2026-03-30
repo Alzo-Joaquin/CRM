@@ -5,57 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}CRM{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-box">CRM</div>
-        <div>
-          <h2>Panel Comercial</h2>
-          <p>Gestión de ventas</p>
+  <div class="dashboard-root">
+    
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">CRM</div>
+        <div class="brand-text">
+          <h2 class="brand-title">Panel Comercial</h2>
+          <p class="brand-tagline">Gestión de ventas</p>
         </div>
       </div>
 
-      <nav class="sidebar-nav">
-        <a href="/" class="nav-link">🏠 <span>Inicio</span></a>
-        <a href="/clientes-ui" class="nav-link">👥 <span>Clientes</span></a>
+      <nav class="navigation-menu">
+        <a href="/" class="menu-item">🏠 <span>Inicio</span></a>
+        <a href="/clientes-ui" class="menu-item">👥 <span>Clientes</span></a>
 
         {% if current_user.rol == "admin" %}
-          <a href="/productos-ui" class="nav-link">📦 <span>Productos</span></a>
-          <a href="/usuarios-ui" class="nav-link">🔐 <span>Usuarios</span></a>
+          <a href="/productos-ui" class="menu-item">📦 <span>Productos</span></a>
+          <a href="/usuarios-ui" class="menu-item">🔐 <span>Usuarios</span></a>
         {% endif %}
 
-        <a href="/ventas-ui" class="nav-link">💰 <span>Ventas</span></a>
+        <a href="/ventas-ui" class="menu-item">💰 <span>Ventas</span></a>
       </nav>
 
       <div class="sidebar-footer">
         {% if current_user.is_authenticated %}
-          <p>{{ current_user.nombre }}</p>
-          <small>Rol: {{ current_user.rol }}</small>
+          <div class="user-profile-box">
+            <div class="user-avatar">{{ current_user.nombre[0] | upper }}</div>
+            <div class="user-details">
+              <p class="user-name">{{ current_user.nombre }}</p>
+              <small class="user-role-badge">{{ current_user.rol }}</small>
+            </div>
+          </div>
           <div class="sidebar-footer-actions">
-            <a href="{{ url_for('auth.logout') }}" class="logout-link">Cerrar sesión</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout-button">
+              <span class="logout-icon">󰈆</span> Cerrar sesión
+            </a>
           </div>
         {% else %}
           <p>CRM Demo</p>
           <small>Deploy + DB online</small>
         {% endif %}
-      </div>
-
+    </div>
     </aside>
 
-    <main class="main-content">
-      <header class="topbar">
-        <div>
-          <h1>{% block page_title %}Panel{% endblock %}</h1>
-          <p class="topbar-subtitle">{% block page_subtitle %}Administración general del sistema{% endblock %}</p>
+    <main class="page-container">
+      <header class="page-header">
+        <div class="header-content">
+          <h1 class="header-title">{% block page_title %}Panel{% endblock %}</h1>
+          <p class="header-description">{% block page_subtitle %}Administración general del sistema{% endblock %}</p>
         </div>
       </header>
 
-      <section class="content-area">
+      <section class="dynamic-content">
         {% block content %}{% endblock %}
       </section>
     </main>
+
   </div>
 </body>
 </html>
