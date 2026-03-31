@@ -9,8 +9,10 @@
 </head>
 <body>
   <div class="dashboard-root">
-    
-    <aside class="app-sidebar">
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <aside id="sidebar" class="app-sidebar">
       <div class="sidebar-brand">
         <div class="brand-icon">CRM</div>
         <div class="brand-text">
@@ -49,14 +51,20 @@
           <p>CRM Demo</p>
           <small>Deploy + DB online</small>
         {% endif %}
-    </div>
+      </div>
     </aside>
 
     <main class="page-container">
       <header class="page-header">
-        <div class="header-content">
-          <h1 class="header-title">{% block page_title %}Panel{% endblock %}</h1>
-          <p class="header-description">{% block page_subtitle %}Administración general del sistema{% endblock %}</p>
+        <div class="page-header-top">
+          <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Abrir menú">
+            ☰
+          </button>
+
+          <div class="header-content">
+            <h1 class="header-title">{% block page_title %}Panel{% endblock %}</h1>
+            <p class="header-description">{% block page_subtitle %}Administración general del sistema{% endblock %}</p>
+          </div>
         </div>
       </header>
 
@@ -66,5 +74,7 @@
     </main>
 
   </div>
+
+  <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
 </body>
 </html>
